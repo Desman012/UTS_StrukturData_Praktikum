@@ -1,23 +1,28 @@
 #include <iostream>
-#include <string>
-
 using namespace std;
 
+// mendeklarasikan double linked list dengan nama variable Buku
 struct Buku
 {
+    // anggota linked list
     string isbn, judul, tahun, penulis, jenis;
     int jumlah;
     Buku *next, *prev;
 };
 
+// mendefinisikan linked list buku dengan nama variable awalBuku dengan isi NULL
 Buku *awalBuku = NULL;
+// Membuat variable maksimal jenis buku yang ada
 const int MAX_JENIS = 4;
 
+// mendeklarasikan  struct dengan nama variable JenisBuku
 struct JenisBuku
 {
+    // anggotanya
     string jenis, deskripsi;
-} jenisBuku[MAX_JENIS];
+} jenisBuku[MAX_JENIS]; // mendefinisikan struct menjadi array struct dengan nama varibale jenisBuku dengan panjang MAX_JENIS
 
+// function untuk mengisi array struct jenisBuku dengan nama declareJenisBuku
 void declareJenisBuku()
 {
     jenisBuku[0] = {"Novel", "Novel adalah jenis buku yang berisi cerita dengan sedikit gambar."};
@@ -26,20 +31,24 @@ void declareJenisBuku()
     jenisBuku[3] = {"Kamus", "Buku yang berisi pengertian atau terjemahan kata asing."};
 }
 
+// membuat function untuk mengecek apakah ISBN ada yang duplikat tidak dengan mengembalikan nilai boolean
 bool cekISBN(string isbn)
 {
     Buku *cek = awalBuku;
     while (cek != NULL)
     {
+        // apabila ISBN sudah ada maka akan mengembalikan nilai true
         if (cek->isbn == isbn)
         {
             return true;
         }
         cek = cek->next;
     }
+    // apabila ISBN tidak ada maka akan mengembalikan nilai false
     return false;
 }
 
+// membuat function dengan return berupa linked list dengan parameter string isbn, dengan nama cariBuku
 Buku *cariBuku(string isbn)
 {
     Buku *sekarang = awalBuku;
@@ -54,6 +63,7 @@ Buku *cariBuku(string isbn)
     return NULL;
 }
 
+// membuat function untuk nge-print daftar jenis buku 
 void listJenisBuku()
 {
     cout << "\nNO.\tJenis Buku\t\tDeskripsi \n";
@@ -64,6 +74,7 @@ void listJenisBuku()
     }
 }
 
+// membuat function untuk nge-print daftar buku
 void listBuku()
 {
     Buku *sekarang = awalBuku;
@@ -84,6 +95,7 @@ void listBuku()
     }
 }
 
+// membuat function untuk menampilkan list buku atau jenis buku, dengan paramater char pilihan
 void tampil(char pilihan)
 {
     char kembali;
@@ -102,27 +114,23 @@ void tampil(char pilihan)
     } while (!(kembali == 'y' || kembali == 'Y'));
 }
 
-void tambahBuku()
-{
+// membuat function untuk menambah list buku ke dalam linkedlist
+void tambahBuku(){
     string isbn;
     char lanjut;
-    do
-    {
+    do{
         Buku *baru = new Buku();
         cout << "\nMasukkan Nomor ISBN : ";
         cin >> isbn;
-        if (cekISBN(isbn))
-        {
-            do
-            {
+        if (cekISBN(isbn)){
+            do{
                 cout << "\nISBN sudah ada, tidak boleh duplikat!\n";
                 cout << "\n99.\tLanjut\n00.\tKembali menu utama\n";
                 cout << "==========================================\n";
                 cout << "Pilih (00/99) : ";
                 cin >> isbn;
             } while (!(isbn == "00" || isbn == "99"));
-            if (isbn == "00")
-            {
+            if (isbn == "00"){
                 return;
             }
             delete baru;
@@ -141,12 +149,10 @@ void tambahBuku()
         int pilihan;
         cout << "\nPilih nomor jenis buku: ";
         cin >> pilihan;
-        if (pilihan >= 1 && pilihan <= MAX_JENIS)
-        {
+        if (pilihan >= 1 && pilihan <= MAX_JENIS){
             baru->jenis = jenisBuku[pilihan - 1].jenis;
         }
-        else
-        {
+        else{
             cout << "\n\nNomor jenis buku tidak valid!\n";
             delete baru;
             continue;
@@ -154,15 +160,12 @@ void tambahBuku()
         cout << "Masukkan Jumlah Buku : ";
         cin >> baru->jumlah;
         baru->next = NULL;
-        if (awalBuku == NULL)
-        {
+        if (awalBuku == NULL){
             awalBuku = baru;
         }
-        else
-        {
+        else{
             Buku *temp = awalBuku;
-            while (temp->next != NULL)
-            {
+            while (temp->next != NULL){
                 temp = temp->next;
             }
             temp->next = baru;
@@ -173,6 +176,7 @@ void tambahBuku()
     } while (lanjut == 'y' || lanjut == 'Y');
 }
 
+// function untuk mengubah data buku
 void ubahBuku()
 {
     string isbn;
@@ -207,43 +211,38 @@ void ubahBuku()
     cin >> dapatBuku->jumlah;
 }
 
-void hapusBuku()
-{
+// function untuk menghapus data buku
+void hapusBuku(){
     string isbn;
     cout << "\nMasukkan ISBN Buku yang ingin dihapus : ";
     cin >> isbn;
     Buku *dapatBuku = cariBuku(isbn);
-    if (dapatBuku == NULL)
-    {
-        do
-        {
+    if (dapatBuku == NULL){
+        do{
             cout << "\n\nISBN yang anda masukan salah!\n";
             cout << "\nKembali ke menu utama (y)? : ";
             cin >> isbn;
         } while (!(isbn == "Y" || isbn == "y"));
         return;
     }
-    if (dapatBuku->prev == NULL)
-    {
+    if (dapatBuku->prev == NULL){
         awalBuku = dapatBuku->next;
     }
-    else
-    {
+    else{
         dapatBuku->prev->next = dapatBuku->next;
     }
-    if (dapatBuku->next != NULL)
-    {
+    if (dapatBuku->next != NULL){
         dapatBuku->next->prev = dapatBuku->prev;
     }
     delete dapatBuku;
-    do
-    {
+    do{
         cout << "\n\nBuku dengan ISBN " << isbn << " telah dihapus.";
         cout << "\nKembali ke menu utama (y)? : ";
         cin >> isbn;
-    } while (isbn != "Y" || isbn != "y");
+    } while (!(isbn == "Y" || isbn == "y"));
 }
 
+// program utama
 int main()
 {
     declareJenisBuku();
